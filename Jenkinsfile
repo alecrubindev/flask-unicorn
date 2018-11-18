@@ -16,13 +16,13 @@ volumes: [
     def shortGitCommit = "${gitCommit[0..10]}"
     def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
 
-    stage('Create Docker Image') {
+    stage('Build Image') {
       container('docker') {
         app = docker.build("kuber-221407/flask-sample-one")
       }
     }
 
-    stage('Push Docker Image') {
+    stage('Push Image') {
       container('docker') {
         docker.withRegistry("https://us.gcr.io", "gcr:kuber-221407-gcr") {
           app.push("${env.BUILD_NUMBER}")
