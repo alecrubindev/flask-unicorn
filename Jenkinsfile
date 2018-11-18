@@ -36,7 +36,8 @@ volumes: [
         sh "mkdir -p kuber-charts"
         sh "helm package helm/flask-unicorn/"
         sh "mv flask-unicorn-*.tgz kuber-charts/"
-        sh "helm repo index kuber-charts --merge --url https://kuber-charts.storage.googleapis.com"
+        sh "ls kuber-charts/"
+        sh "helm repo index kuber-charts/ --merge --url https://kuber-charts.storage.googleapis.com"
       }
     }
   }
