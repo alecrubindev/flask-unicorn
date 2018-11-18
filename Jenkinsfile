@@ -2,7 +2,8 @@ def label = "worker-${UUID.randomUUID().toString()}"
 
 podTemplate(label: label, containers: [
   containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-  containerTemplate(name: 'helm', image: 'alpine/helm', command: 'cat', ttyEnabled: true)
+  containerTemplate(name: 'helm', image: 'alpine/helm', command: 'cat', ttyEnabled: true),
+  containerTemplate(name: 'cloud-sdk', image: 'google/cloud-sdk', command: 'cat', ttyEnabled: true)
 ],
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
@@ -31,15 +32,22 @@ volumes: [
       }
     }
 
-    stage('Run helm') {
+    stage('Build Chart') {
       container('helm') {
         sh "helm init --client-only"
-        sh "helm list"
-        sh "mkdir -p ${chartRepoName}"
+        sh "mkdir -p $chartRepoName"
         sh "helm package helm/flask-unicorn/"
         sh "mv flask-unicorn-*.tgz ${chartRepoName}/"
         sh "helm repo index ${chartRepoName} --merge ${chartRepoUrl}/index.yaml --url ${chartRepoUrl}"
         sh "ls ${chartRepoName}/"
+      }
+    }
+
+    stage('Push Chart') {
+      container('cloud-sdk') {
+        withCredentials([file(credentialsId: 'kuber-221407-storage', variable: 'FILE')]) {
+          sh "gcloud auth activate-service-account --key-file $FILE"
+        }
       }
     }
   }
