@@ -17,7 +17,7 @@ volumes: [
 
     stage('Build Image') {
       container('docker') {
-        echo "${gitBranch}/${shortCommit}"
+        echo "${gitBranch}/${gitShort}"
         app = docker.build("kuber-221407/flask-sample-one")
       }
     }
