@@ -10,7 +10,7 @@ volumes: [
 ]) {
   node(label) {
     def myRepo = checkout scm
-    def gitCommitShort = myRepo.GIT_COMMIT[0..6]
+    def commitShort = myRepo.GIT_COMMIT[0..6]
     def chartRepoName = "kuber-charts"
     def chartRepoUrl = "https://kuber-charts.storage.googleapis.com"
 
@@ -23,7 +23,7 @@ volumes: [
     stage('Push Image') {
       container('docker') {
         docker.withRegistry("https://us.gcr.io", "gcr:kuber-221407-gcr") {
-          app.push("${gitCommitShort}")
+          app.push("${commitShort}")
           app.push("latest")
         }
       }
@@ -44,6 +44,7 @@ volumes: [
       container('cloud-sdk') {
         withCredentials([file(credentialsId: 'kuber-221407-storage', variable: 'FILE')]) {
           sh "gcloud auth activate-service-account --key-file $FILE"
+          sh "gsutil cp ${chartRepoName}/ gs://${chartRepoName"
         }
       }
     }
