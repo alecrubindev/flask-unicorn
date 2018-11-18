@@ -18,7 +18,7 @@ volumes: [
 
     stage('Create Docker Image') {
       container('docker') {
-        app = docker.build("us.grc.io/kuber-221407/flask-sample-one")
+        app = docker.build("kuber-221407/flask-sample-one")
       }
     }
 
