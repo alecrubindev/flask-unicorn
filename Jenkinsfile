@@ -36,7 +36,6 @@ volumes: [
         sh "helm package helm/flask-unicorn/"
         sh "mv flask-unicorn-*.tgz ${chartRepoName}/"
         sh "helm repo index ${chartRepoName} --merge ${chartRepoUrl}/index.yaml --url ${chartRepoUrl}"
-        sh "ls ${chartRepoName}/"
       }
     }
 
@@ -44,7 +43,7 @@ volumes: [
       container('cloud-sdk') {
         withCredentials([file(credentialsId: 'kuber-221407-storage', variable: 'FILE')]) {
           sh "gcloud auth activate-service-account --key-file $FILE"
-          sh "gsutil cp -r ${chartRepoName} gs://${chartRepoName}"
+          sh "gsutil cp -r ${chartRepoName}/ gs://${chartRepoName}"
         }
       }
     }
