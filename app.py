@@ -1,10 +1,11 @@
-from flask import Flask
+from flask import Flask, request
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return 'Flask is Dockerized!'
+    env = request.environ
+    return f"Flask is Dockerized! @ {env['REMOTE_ADDR']}:{env['REMOTE_PORT']}"
 
 
 if __name__ == '__main__':
