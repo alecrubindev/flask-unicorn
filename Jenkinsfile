@@ -24,7 +24,7 @@ volumes: [
 
     stage('Push Docker Image') {
       container('docker') {
-        docker.withRegistry("https://us.gcr.io", "gcr:kuber-22104-gcr") {
+        docker.withRegistry("https://us.gcr.io", "gcr:kuber-221407-gcr") {
           app.push("${env.BUILD_NUMBER}")
           app.push("latest")
         }
