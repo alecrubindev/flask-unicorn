@@ -3,7 +3,7 @@ MAINTAINER Alec Rubin "alecjakerubin@gmail.com"
 
 RUN apk add --update --no-cache python python-dev py-pip build-base
 
-COPY . /app
+COPY app.py requirements.txt /app/
 WORKDIR /app
 RUN pip install -r requirements.txt
 ENTRYPOINT ["gunicorn"]
