@@ -13,7 +13,7 @@ volumes: [
     def myRepo = checkout scm
     def gitBranch = myRepo.GIT_BRANCH
     def gitCommit = myRepo.GIT_COMMIT
-    def gitShort = myRepo.GIT_COMMIT[1..10]
+    def gitShort = myRepo.GIT_COMMIT[0..6]
 
     stage('Build Image') {
       container('docker') {
