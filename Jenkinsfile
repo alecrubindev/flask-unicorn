@@ -12,6 +12,8 @@ volumes: [
     def gitBranch = myRepo.GIT_BRANCH
     def gitCommit = myRepo.GIT_COMMIT
     def gitShort = myRepo.GIT_COMMIT[0..6]
+    def chartRepoName = "kuber-charts"
+    def chartRepoUrl = "https://kuber-charts.storage.googleapis.com"
 
     stage('Build Image') {
       container('docker') {
@@ -33,13 +35,11 @@ volumes: [
       container('helm') {
         sh "helm init --client-only"
         sh "helm list"
-        sh "mkdir -p kuber-charts"
+        sh "mkdir -p ${chartRepoName}"
         sh "helm package helm/flask-unicorn/"
-        sh "mv flask-unicorn-*.tgz kuber-charts/"
-        sh "ls kuber-charts/"
-        sh "helm repo index kuber-charts \
-            --merge https://kuber-charts.storage.googleapis.com/index.yaml \
-            --url https://kuber-charts.storage.googleapis.com"
+        sh "mv flask-unicorn-*.tgz ${chartRepoName}/"
+        sh "helm repo index ${chartRepoName} --merge ${chartRepoUrl}/index.yaml --url ${chartRepoUrl}"
+        sh "ls ${chartRepoName}/"
       }
     }
   }
