@@ -13,11 +13,12 @@ volumes: [
     def myRepo = checkout scm
     def gitBranch = myRepo.GIT_BRANCH
     def gitCommit = myRepo.GIT_COMMIT
+    def gitUrl = myRepo.GIT_URL
     def prevGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
 
     stage('Build Image') {
       container('docker') {
-        echo "${myRepo}:${gitBranch} ${prevGitCommit} -> ${gitCommit}"
+        echo "${gitUrl}:${gitBranch} ${prevGitCommit} -> ${gitCommit}"
         echo "${env}"
         app = docker.build("kuber-221407/flask-sample-one")
       }
