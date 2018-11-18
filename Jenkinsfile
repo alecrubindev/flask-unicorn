@@ -10,23 +10,20 @@ volumes: [
 ]) {
   node(label) {
     def myRepo = checkout scm
-    def gitBranch = myRepo.GIT_BRANCH
-    def gitCommit = myRepo.GIT_COMMIT
-    def gitShort = myRepo.GIT_COMMIT[0..6]
+    def gitCommitShort = myRepo.GIT_COMMIT[0..6]
     def chartRepoName = "kuber-charts"
     def chartRepoUrl = "https://kuber-charts.storage.googleapis.com"
 
     stage('Build Image') {
       container('docker') {
-        echo "${gitBranch}/${gitShort}"
         app = docker.build("kuber-221407/flask-sample-one")
       }
     }
 
     stage('Push Image') {
       container('docker') {
-        docker.withRegistry("https://us.gcr.io", "gcr:kuber-221407-storage") {
-          app.push("${gitShort}")
+        docker.withRegistry("https://us.gcr.io", "gcr:kuber-221407-gcr") {
+          app.push("${gitCommitShort}")
           app.push("latest")
         }
       }
@@ -35,7 +32,7 @@ volumes: [
     stage('Build Chart') {
       container('helm') {
         sh "helm init --client-only"
-        sh "mkdir -p $chartRepoName"
+        sh "mkdir -p ${chartRepoName}"
         sh "helm package helm/flask-unicorn/"
         sh "mv flask-unicorn-*.tgz ${chartRepoName}/"
         sh "helm repo index ${chartRepoName} --merge ${chartRepoUrl}/index.yaml --url ${chartRepoUrl}"
