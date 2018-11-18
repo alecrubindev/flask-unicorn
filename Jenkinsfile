@@ -19,6 +19,10 @@ volumes: [
     stage('Create Docker Image') {
       container('docker') {
         sh "docker build -t flask-sample-one:latest ."
+        app = docker.build("us.grc.io/kuber-221407/flask-sample-one"
+        docker.withRegistry("https://us.gcr.io", "gcr:kuber-22104-gcr") {
+          app.push('latest')
+        }
       }
     }
     stage('Run kubectl') {
