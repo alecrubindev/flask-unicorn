@@ -11,23 +11,20 @@ volumes: [
 ]) {
   node(label) {
     def myRepo = checkout scm
-    def gitBranch = myRepo.GIT_BRANCH
     def gitCommit = myRepo.GIT_COMMIT
-    def gitUrl = myRepo.GIT_URL
-    def prevGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
+    def gitShort = myRepo.GIT_COMMIT[1..10]
 
     stage('Build Image') {
       container('docker') {
-        echo "${gitUrl}:${gitBranch} ${prevGitCommit} -> ${gitCommit}"
-        echo "${env}"
+        echo "${gitBranch}/${shortCommit}"
         app = docker.build("kuber-221407/flask-sample-one")
       }
     }
 
     stage('Push Image') {
       container('docker') {
-        docker.withRegistry("https://us.gcr.io", "gcr:kuber-221407-gcr") {
-          app.push("${env.BUILD_NUMBER}")
+        docker.withRegistry("https://us.gcr.io", "kuber-221407-gcr") {
+          app.push("${gitShort}")
           app.push("latest")
         }
       }
