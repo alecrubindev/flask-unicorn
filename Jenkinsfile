@@ -18,7 +18,7 @@ volumes: [
 
     stage('Create Docker Image') {
       container('docker') {
-        app = docker.build("us.grc.io/kuber-221407/flask-sample-one"
+        app = docker.build("us.grc.io/kuber-221407/flask-sample-one")
       }
     }
 
@@ -30,6 +30,7 @@ volumes: [
         }
       }
     }
+
     stage('Run kubectl') {
       container('kubectl') {
         sh "kubectl get pods"
