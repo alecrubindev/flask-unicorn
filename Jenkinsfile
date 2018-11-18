@@ -11,6 +11,7 @@ volumes: [
 ]) {
   node(label) {
     def myRepo = checkout scm
+    def gitBranch = myRepo.GIT_BRANCH
     def gitCommit = myRepo.GIT_COMMIT
     def gitShort = myRepo.GIT_COMMIT[1..10]
 
