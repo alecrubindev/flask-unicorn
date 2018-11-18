@@ -44,7 +44,7 @@ volumes: [
       container('cloud-sdk') {
         withCredentials([file(credentialsId: 'kuber-221407-storage', variable: 'FILE')]) {
           sh "gcloud auth activate-service-account --key-file $FILE"
-          sh "gsutil cp ${chartRepoName}/* gs://${chartRepoName}"
+          sh "gsutil cp -r ${chartRepoName} gs://${chartRepoName}"
         }
       }
     }
