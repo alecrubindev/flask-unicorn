@@ -11,13 +11,14 @@ volumes: [
 ]) {
   node(label) {
     def myRepo = checkout scm
-    def gitCommit = myRepo.GIT_COMMIT
     def gitBranch = myRepo.GIT_BRANCH
-    def shortGitCommit = "${gitCommit[0..10]}"
-    def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
+    def gitCommit = myRepo.GIT_COMMIT
+    def prevGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
 
     stage('Build Image') {
       container('docker') {
+        echo "${myRepo}:${gitBranch} ${prevGitCommit} -> ${gitCommit}"
+        echo "${env}"
         app = docker.build("kuber-221407/flask-sample-one")
       }
     }
@@ -36,6 +37,7 @@ volumes: [
         sh "kubectl get pods"
       }
     }
+
     stage('Run helm') {
       container('helm') {
         sh "helm list"
