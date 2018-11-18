@@ -31,6 +31,7 @@ volumes: [
 
     stage('Run helm') {
       container('helm') {
+        sh "helm init --client-only"
         sh "helm list"
         sh "mkdir -p kuber-charts"
         sh "helm package helm/flask-unicorn/"
